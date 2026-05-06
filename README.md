@@ -1,4 +1,4 @@
-# MedScript: Intelligent Prescription Digitization System
+# MedScript: Automated Medical Prescription Digitization
 
 ## Overview
 
