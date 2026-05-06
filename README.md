@@ -65,23 +65,6 @@ MedScript/
 └── README.md
 ```
 
----
-
-## Example Output
-
-```python
-{
-    'medicine': 'paracetamol',
-    'confidence': 0.85,
-    'dosage': '500 mg',
-    'frequency': 'twice daily',
-    'duration': '5 days'
-}
-```
-
-(Add screenshots here)
-
----
 
 ## Challenges & Learnings
 
