@@ -1,0 +1,73 @@
+# Medication dictionary mapping canonical names to their aliases
+MEDICATION_DICT = {
+    # Common generics
+    "paracetamol": ["paracetamol", "acetaminophen", "crocin", "dolo", "tylenol"],
+    "amoxicillin": ["amoxicillin", "amoxil", "himox", "moxicillin"],
+    "amoxicillin + clavulanic acid": ["amoxicillin + clavulanic acid", "augmentin", "advent", "clavam"],
+    "azithromycin": ["azithromycin", "azithro", "zithromax", "azee"],
+    "cetirizine": ["cetirizine", "cetiri", "allergon", "histacet", "alerheal"],
+    "vitamin c": ["vitamin c", "ascorbic acid", "vitamin-c", "limcee"],
+    "pantoprazole": ["pantoprazole", "pantop", "pantoloc", "protonix"],
+    "omeprazole": ["omeprazole", "omepra", "losec"],
+    "diclofenac": ["diclofenac", "diclofen", "voltaren", "voveran", "hifenac"],
+    "metformin": ["metformin", "glucophage", "glycomet"],
+    "rabeprazole": ["rabeprazole", "rabicip", "pariet"],
+    "cefpodoxime": ["cefpodoxime", "cepodem", "cefpodox"],
+    "dexamethasone": ["dexamethasone", "cortimax", "dexona"],
+    "aceclofenac": ["aceclofenac", "acenac", "affecon", "nd"],
+    
+    # Indian brands
+    "sompraz": ["sompraz", "sompra", "esomeprazole"],
+    "flunir": ["flunir", "flunil", "flunar", "flunix"],
+    "alprax": ["alprax", "alprazolam", "alspan", "alspanz"],
+    "dolo-650": ["dolo-650", "dolo", "dolo650"],
+    "mactotal": ["mactotal", "macotol", "mactoto"],
+    "nexol": ["nexol", "h nexol", "hnexol"],
+    "xpect-b": ["xpect-b", "xpect", "xpectb"],
+    "physiomer": ["physiomer", "physio"],
+    "mucotune": ["mucotune", "mucotu"],
+    
+    # Additional antibiotics & medicines
+    "roxithromycin": ["roxithromycin", "roxin", "roxicin", "rox"],
+    "ranitidine": ["ranitidine", "raniti", "ranidine", "zantac"],
+    "angiotensin": ["angiwel", "angina", "isosorbide"],
+    "dytone": ["dytone", "dytone-plus", "dytone plus"],
+    "cardoxin": ["cardoxin", "cardio", "cardiac"],
+    "cimla": ["cimla", "cimla-plus"],
+    "glimepiride": ["glimepiride", "amaryl", "amarylis"],
+    "carvedilol": ["carvedilol", "coreg", "cored"],
+    "rosuvastatin": ["rosuvastatin", "rosuvas", "crestor"],
+    "atorvastatin": ["atorvastatin", "atorva", "lipitor"],
+    "dytor": ["dytor", "dytor plus", "dytor-plus"],
+    "anginel": ["anginel", "angina", "isosorbide"],
+    
+    # Common brand/generic medicines from prescriptions
+    "benzoyl peroxide": ["bpo", "benzoyl peroxide", "benzac"],
+    "menogen": ["menogen", "meno", "menopause"],
+    "laxmar": ["laxmar", "laxmar plus"],
+    "acetaminophen": ["tempo", "tempi", "acetaminophen"],
+    "gemfibrozil": ["lopid", "gemfibrozil"],
+    "clopidogrel": ["clopidogrel", "clopilet", "plavix"],
+    "ramipril": ["ramipril", "ramistar", "cardace"],
+    "torsemide": ["torsemide", "dytor", "dytor plus", "torasemide"],
+    "estrogen": ["ogen", "estrogen", "estrogens"],
+    
+    # Units (non-medicines)
+    "milligram": ["mg", "milligram"],
+    "microgram": ["mcg", "microgram", "microgram"],
+    "gram": ["gm", "gram", "g"],
+    "milliliter": ["ml", "milliliter"],
+    
+    # Forms (non-medicines)
+    "tablet": ["tab", "tablet", "tablets"],
+    "capsule": ["cap", "capsule", "capsules"],
+    
+    # Frequencies (non-medicines)
+    "once daily": ["od", "once", "daily", "o.d"],
+    "twice daily": ["bd", "bid", "twice"],
+    "three times daily": ["tds", "tid", "thrice"],
+    
+    # Routes (non-medicines)
+    "by mouth": ["oral", "po", "by mouth"],
+    "intravenous": ["iv", "intravenous"],
+}
