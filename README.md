@@ -64,7 +64,13 @@ MedScript/
 ├── uploads/
 └── README.md
 ```
+## Example Output
 
+### Input Prescription
+![Input](screenshots/input.jpeg)
+
+### Extracted Output
+![Output](screenshots/output.png)
 
 ## Challenges & Learnings
 
