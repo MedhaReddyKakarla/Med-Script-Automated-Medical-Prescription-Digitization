@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}History - Medical Prescription System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-header {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        color: white;
+    }
+    
+    .history-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    
+    .history-table {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.2rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    td {
+        padding: 1.2rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    tbody tr:hover {
+        background: #f9f9f9;
+    }
+    
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .filename-cell {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .date-cell {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .count-cell {
+        text-align: center;
+        background: #f0f2ff;
+        color: #667eea;
+        font-weight: 600;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        display: inline-block;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-action {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        display: inline-block;
+    }
+    
+    .btn-view {
+        background: #667eea;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background: #764ba2;
+    }
+    
+    .btn-pdf {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-pdf:hover {
+        background: #c0392b;
+    }
+    
+    .btn-csv {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-csv:hover {
+        background: #229954;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+    }
+    
+    .empty-state p {
+        margin: 0.5rem 0;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 2rem;
+        background: white;
+        border-top: 1px solid #eee;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #667eea;
+        transition: all 0.2s;
+    }
+    
+    .pagination a:hover {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .pagination span.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .pagination span.disabled {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+    
+    @media (max-width: 768px) {
+        table {
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.8rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .btn-action {
+            width: 100%;
+            padding: 0.4rem 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="history-header">
+    <h1>📋 Prescription History</h1>
+    <p>All your uploaded prescriptions and detection results</p>
+</div>
+
+{% if prescriptions.items %}
+<div class="history-table">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>📄 Filename</th>
+                    <th>📅 Upload Date</th>
+                    <th>💊 Medicines</th>
+                    <th>⏱️ Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prescription in prescriptions.items %}
+                <tr>
+                    <td class="filename-cell">{{ prescription.filename }}</td>
+                    <td class="date-cell">{{ prescription.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <span class="count-cell">{{ prescription.total_medicines }}</span>
+                    </td>
+                    <td class="date-cell">{{ "%.2f"|format(prescription.processing_time) }}s</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('results', prescription_id=prescription.id) }}" class="btn-action btn-view">View</a>
+                            <a href="{{ url_for('download_pdf', prescription_id=prescription.id) }}" class="btn-action btn-pdf">PDF</a>
+                            <a href="{{ url_for('download_csv', prescription_id=prescription.id) }}" class="btn-action btn-csv">CSV</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if prescriptions.pages > 1 %}
+    <div class="pagination">
+        {% if prescriptions.has_prev %}
+            <a href="{{ url_for('history', page=prescriptions.prev_num) }}">← Previous</a>
+        {% else %}
+            <span class="disabled">← Previous</span>
+        {% endif %}
+        
+        {% for page_num in prescriptions.iter_pages() %}
+            {% if page_num %}
+                {% if page_num == prescriptions.page %}
+                    <span class="active">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if prescriptions.has_next %}
+            <a href="{{ url_for('history', page=prescriptions.next_num) }}">Next →</a>
+        {% else %}
+            <span class="disabled">Next →</span>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="history-table">
+    <div class="empty-state">
+        <p style="font-size: 1.2rem;">📋 No prescriptions yet</p>
+        <p>You haven't uploaded any prescriptions yet.</p>
+        <p>Start by uploading your first prescription image!</p>
+    </div>
+</div>
+{% endif %}
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{{ url_for('upload') }}" style="display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">📤 Upload New Prescription</a>
+</div>
+{% endblock %}

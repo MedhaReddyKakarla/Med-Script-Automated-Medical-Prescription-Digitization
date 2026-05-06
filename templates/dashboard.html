@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Medical Prescription{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        color: white;
+    }
+    
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+    }
+    
+    .dashboard-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    
+    .stat-card h3 {
+        color: #666;
+        margin: 0 0 1rem 0;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .stat-card .number {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #667eea;
+        margin: 0;
+    }
+    
+    .recent-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .recent-section h2 {
+        color: #333;
+        margin-top: 0;
+    }
+    
+    .prescription-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .prescription-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s;
+    }
+    
+    .prescription-item:hover {
+        background: #f9f9f9;
+    }
+    
+    .prescription-item:last-child {
+        border-bottom: none;
+    }
+    
+    .prescription-info {
+        flex: 1;
+    }
+    
+    .prescription-name {
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .prescription-meta {
+        font-size: 0.85rem;
+        color: #999;
+        margin: 0;
+    }
+    
+    .prescription-stats {
+        display: flex;
+        gap: 2rem;
+        margin-right: 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .prescription-stat {
+        color: #666;
+    }
+    
+    .prescription-stat strong {
+        color: #667eea;
+    }
+    
+    .btn-view {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 500;
+        transition: background 0.3s;
+    }
+    
+    .btn-view:hover {
+        background: #764ba2;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #999;
+    }
+    
+    .empty-state p {
+        margin: 0.5rem 0;
+    }
+    
+    .upload-prompt {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .upload-prompt a {
+        background: white;
+        color: #667eea;
+        padding: 0.75rem 2rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: transform 0.2s;
+    }
+    
+    .upload-prompt a:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>👋 Welcome, {{ user.username }}!</h1>
+    <p>Medical Prescription System</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>📤 Total Uploads</h3>
+        <p class="number">{{ stats.total_uploads }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>💊 Total Medicines</h3>
+        <p class="number">{{ stats.total_medicines }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>📊 Average per Upload</h3>
+        <p class="number">{{ "%.1f"|format(stats.avg_medicines) }}</p>
+    </div>
+</div>
+
+{% if prescriptions %}
+<div class="recent-section">
+    <h2>📋 Recent Prescriptions</h2>
+    <ul class="prescription-list">
+        {% for prescription in prescriptions[:5] %}
+        <li class="prescription-item">
+            <div class="prescription-info">
+                <p class="prescription-name">📄 {{ prescription.filename }}</p>
+                <p class="prescription-meta">Uploaded: {{ prescription.upload_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            <div class="prescription-stats">
+                <div class="prescription-stat">
+                    Medicines: <strong>{{ prescription.total_medicines }}</strong>
+                </div>
+                <div class="prescription-stat">
+                    Time: <strong>{{ "%.2f"|format(prescription.processing_time) }}s</strong>
+                </div>
+            </div>
+            <a href="{{ url_for('results', prescription_id=prescription.id) }}" class="btn-view">View Details</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div style="text-align: center; margin-top: 1rem;">
+        <a href="{{ url_for('history') }}" style="color: #667eea; text-decoration: none; font-weight: 600;">View all prescriptions →</a>
+    </div>
+</div>
+{% else %}
+<div class="recent-section">
+    <div class="empty-state">
+        <p>📋 No prescriptions yet</p>
+        <p>Start by uploading your first prescription image</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="upload-prompt">
+    <h3>Ready to digitize your prescription?</h3>
+    <p>Upload a prescription image to extract medicines, dosages, and frequencies</p>
+    <a href="{{ url_for('upload') }}">📤 Upload Prescription</a>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Medical Prescription System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 200px);
+        text-align: center;
+        color: white;
+    }
+    
+    .error-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .error-code {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .error-message {
+        font-size: 1.5rem;
+        margin: 1rem 0 0 0;
+    }
+    
+    .error-details {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        max-width: 500px;
+    }
+    
+    .error-details p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+    
+    .back-home {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.75rem 2rem;
+        background: white;
+        color: #667eea;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+    
+    .back-home:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-icon">❌</div>
+    
+    <h1 class="error-code">Error</h1>
+    <p class="error-message">{{ error or "An unexpected error occurred" }}</p>
+    
+    <div class="error-details">
+        <p>😔 We encountered a problem, but don't worry.</p>
+        <p>Please try again or contact support if the problem persists.</p>
+    </div>
+    
+    <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('login') }}" class="back-home">
+        ← Back to {{ "Dashboard" if session.get('user_id') else "Login" }}
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Results - Medical Prescription System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .results-header {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        color: white;
+    }
+    
+    .results-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    
+    .prescription-info {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .prescription-image-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+    
+    .prescription-image-container img {
+        max-width: 100%;
+        max-height: 500px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .prescription-image-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .prescription-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .meta-label {
+        font-size: 0.85rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.3rem;
+    }
+    
+    .meta-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .export-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-export {
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s;
+        display: inline-block;
+    }
+    
+    .btn-export:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-export.pdf {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-export.csv {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .medicines-section {
+        background: white;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+    
+    .medicines-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .medicine-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s;
+    }
+    
+    .medicine-item:hover {
+        background: #f9f9f9;
+    }
+    
+    .medicine-item:last-child {
+        border-bottom: none;
+    }
+    
+    .medicine-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .confidence-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .confidence-high {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .confidence-medium {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .confidence-low {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .medicine-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        font-size: 0.85rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.3rem;
+    }
+    
+    .detail-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .detail-value.empty {
+        color: #ccc;
+        font-style: italic;
+    }
+    
+    .no-medicines {
+        padding: 3rem;
+        text-align: center;
+        color: #999;
+    }
+    
+    .no-medicines p {
+        margin: 0.5rem 0;
+    }
+    
+    .back-button {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.7rem 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    
+    .back-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-header">
+    <h1>📊 Detection Results</h1>
+    <p>Extracted medicine information from prescription</p>
+    <div style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); padding: 0.5rem; border-radius: 5px; margin-top: 1rem; font-size: 0.9rem;">
+        <strong>🔍 Detection Method:</strong>
+        <span>Medicine Analysis from Uploaded Prescription</span>
+    </div>
+</div>
+
+<div class="prescription-image-container">
+    <img src="{{ url_for('get_prescription_image', prescription_id=prescription.id) }}" alt="Prescription Image">
+    <div class="prescription-image-label">📷 Uploaded Prescription</div>
+</div>
+
+<div class="prescription-info">
+    <div class="prescription-meta">
+        <div class="meta-item">
+            <span class="meta-label">📄 Filename</span>
+            <span class="meta-value">{{ prescription.filename }}</span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">📅 Uploaded</span>
+            <span class="meta-value">{{ prescription.upload_date.strftime('%Y-%m-%d %H:%M') }}</span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">💊 Medicines Detected</span>
+            <span class="meta-value">{{ medicines|length }}</span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">⏱️ Processing Time</span>
+            <span class="meta-value">{{ "%.2f"|format(prescription.processing_time) }}s</span>
+        </div>
+    </div>
+    
+    <div class="export-buttons">
+        <a href="{{ url_for('download_pdf', prescription_id=prescription.id) }}" class="btn-export pdf">📥 Download PDF</a>
+        <a href="{{ url_for('download_csv', prescription_id=prescription.id) }}" class="btn-export csv">📊 Download CSV</a>
+    </div>
+</div>
+
+{% if medicines %}
+<div class="medicines-section">
+    <div class="medicines-header">
+        💊 Detected Medicines ({{ medicines|length }})
+    </div>
+    
+    
+    {% for medicine in medicines %}
+    <div class="medicine-item">
+        <div class="medicine-name">
+            {{ medicine.medicine_name|upper }}
+        </div>
+        
+        <div class="medicine-details">
+            <div class="detail-item">
+                <span class="detail-label">💪 Dosage</span>
+                <span class="detail-value {% if not medicine.dosage %}empty{% endif %}">
+                    {{ medicine.dosage if medicine.dosage else "Not detected" }}
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">⏰ Frequency</span>
+                <span class="detail-value {% if not medicine.frequency %}empty{% endif %}">
+                    {{ medicine.frequency if medicine.frequency else "Not detected" }}
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">📅 Duration</span>
+                <span class="detail-value {% if not medicine.duration %}empty{% endif %}">
+                    {{ medicine.duration if medicine.duration else "Not detected" }}
+                </span>
+            </div>
+        </div>
+        
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="medicines-section">
+    <div class="no-medicines">
+        <p style="font-size: 1.2rem;">❌ No medicines detected</p>
+        <p>The prescription image may not contain readable medicine information.</p>
+        <p>Try uploading a clearer image or retry with better lighting.</p>
+    </div>
+</div>
+{% endif %}
+
+<div style="text-align: center;">
+    <a href="{{ url_for('dashboard') }}" class="back-button">← Back to Dashboard</a>
+</div>
+
+<div style="background: white; padding: 1.5rem; border-radius: 10px; margin-top: 2rem; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);">
+    <p style="margin: 0; color: #666; font-size: 0.9rem;">
+        <strong>⚠️ Disclaimer:</strong> This is an automated medicine analysis document. Always verify medicine information with a qualified healthcare professional before taking any medication. This system is not a substitute for professional medical advice.
+    </p>
+</div>
+{% endblock %}
